@@ -1,0 +1,59 @@
+
+
+auto lo
+iface lo inet loopback
+  address 1.1.1.1/32
+
+auto eth0
+iface eth0 inet dhcp
+
+
+auto swp3
+iface swp3
+
+auto bridge
+iface bridge
+  bridge-stp on
+  bridge-vids 100 200
+  bridge-ports swp1 vni100 vni200
+  bridge-vlan-aware yes
+
+auto RTB_LAN1
+  iface RTB_LAN1
+  vrf-table auto
+
+
+auto vlan100
+iface vlan100
+    ip6-forward off
+    ip-forward off
+    vlan-id 100
+    vlan-raw-device bridge
+    vrf RTB_LAN1
+
+ 
+auto vlan200
+iface vlan200
+    ip6-forward off
+    ip-forward off
+    vlan-id 200
+    vlan-raw-device bridge
+    vrf RTB_LAN1
+
+ 
+auto vni100
+iface vni100
+    bridge-access 100
+#    bridge-arp-nd-suppress on
+    bridge-learning off
+    vxlan-id 10100
+    vxlan-local-tunnelip 1.1.1.1
+ 
+auto vni200
+iface vni200
+     bridge-learning off
+     bridge-access 200
+     bridge-arp-nd-suppress on
+     vxlan-id 10200
+     vxlan-local-tunnelip 1.1.1.1
+

@@ -1,0 +1,32 @@
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet dhcp
+
+
+# uplinks
+auto swp52
+iface swp52
+    post-up ip link set $IFACE promisc on     # Only required on VX
+
+auto vlan100
+iface vlan100
+    vlan-id 100
+    vlan-raw-device bridge
+    address 10.0.100.20/24
+
+
+auto vlan200
+iface vlan200
+    vlan-id 200
+    vlan-raw-device bridge
+    address 10.0.200.20/24
+
+
+auto bridge
+iface bridge
+    bridge-vids 100 200
+    bridge-ports swp52
+    bridge-stp on
+    bridge-vlan-aware yes
