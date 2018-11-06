@@ -14,16 +14,31 @@ Before running this demo, install [VirtualBox](https://www.virtualbox.org/wiki/D
 
     git clone https://github.com/cumulusnetworks/cldemo-vagrant
     cd cldemo-vagrant
-    vagrant up oob-mgmt-server oob-mgmt-switch leaf01 leaf02 leaf03 leaf04 spine01 spine02 server01 server02 server03 server04
+    vagrant up oob-mgmt-server oob-mgmt-switch leaf01 leaf02 leaf03 spine01 spine02 
     vagrant ssh oob-mgmt-server
-    git clone https://github.com/cumulusnetworks/cldemo-config-mlag
-    cd cldemo-config-mlag
+    git clone https://github.com/mgrzybowski/cldemo-arp-suppression-test
+    cd arp-test
     ansible-playbook deploy.yml
-    ssh server01
-    ping 172.16.2.101
+    ssh leaf01
+    ping 10.0.100.20
+
+
 
 Topology
---------
-This demo runs on a spine-leaf topology with two dual-attached hosts. The ansible playbook deploy.yml requires an out-of-band management network that provides access to eth0 on all of the in-band devices.
+------------------------
 
-![Diagram](bgp-unnumbered.png)
+         leaf03
+        /      \
+    spine01  spine02
+       |        |
+     leaf01   leaf02
+
+
+    leaf01 and leaf02 are each configured with subinterfaces in vlan100 and vlan200.
+    leaf01:
+     - 10.0.100.10/24 vlan100
+     - 10.0.200.10/24 vlan200
+    leaf02:
+     - 10.0.100.20/24 vlan100
+     - 10.0.200.20/24 vlan200
+
