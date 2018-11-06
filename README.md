@@ -1,4 +1,4 @@
-Demo MLAG Configurations
+Test arp suppression configurations
 ========================
 This Github repository contains the configuration files necessary for setting
 up Multi-Chassis Link Aggregation using Cumulus Linux and FRRouting on the [Reference Topology](http://github.com/cumulusnetworks/cldemo-vagrant).
