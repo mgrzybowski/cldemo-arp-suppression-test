@@ -45,28 +45,28 @@ Pings that should work in this lab
 
 VNI 10100 / VLAN 100
 
-  cumulus@leaf01:~$ ping -I RED 10.0.100.20
-  ping: Warning: source address might be selected on device other than RED.
-  PING 10.0.100.20 (10.0.100.20) from 10.0.100.10 RED: 56(84) bytes of data.
-  64 bytes from 10.0.100.20: icmp_seq=1 ttl=64 time=2.11 ms
-  64 bytes from 10.0.100.20: icmp_seq=2 ttl=64 time=3.91 ms
+      cumulus@leaf01:~$ ping -I RED 10.0.100.20
+      ping: Warning: source address might be selected on device other than RED.
+      PING 10.0.100.20 (10.0.100.20) from 10.0.100.10 RED: 56(84) bytes of data.
+      64 bytes from 10.0.100.20: icmp_seq=1 ttl=64 time=2.11 ms
+      64 bytes from 10.0.100.20: icmp_seq=2 ttl=64 time=3.91 ms
 
 VNI 10200 / VLAN 200
 
-  cumulus@leaf01:~$ ping -I RED 10.0.200.20
-  ping: Warning: source address might be selected on device other than RED.
-  PING 10.0.200.20 (10.0.200.20) from 10.0.200.10 RED: 56(84) bytes of data.
-  64 bytes from 10.0.200.20: icmp_seq=1 ttl=64 time=2.31 ms
-  64 bytes from 10.0.200.20: icmp_seq=2 ttl=64 time=4.01 ms
+      cumulus@leaf01:~$ ping -I RED 10.0.200.20
+      ping: Warning: source address might be selected on device other than RED.
+      PING 10.0.200.20 (10.0.200.20) from 10.0.200.10 RED: 56(84) bytes of data.
+      64 bytes from 10.0.200.20: icmp_seq=1 ttl=64 time=2.31 ms
+      64 bytes from 10.0.200.20: icmp_seq=2 ttl=64 time=4.01 ms
 
 
 VNI 10300 / VLAN 300
 
-cumulus@leaf01:~$ ping -I BLUE 10.0.100.20
-ping: Warning: source address might be selected on device other than BLUE.
-PING 10.0.100.20 (10.0.100.20) from 10.0.100.10 BLUE: 56(84) bytes of data.
-64 bytes from 10.0.100.20: icmp_seq=1 ttl=64 time=2.35 ms
-64 bytes from 10.0.100.20: icmp_seq=2 ttl=64 time=2.18 ms
+     cumulus@leaf01:~$ ping -I BLUE 10.0.100.20
+     ping: Warning: source address might be selected on device other than BLUE.
+     PING 10.0.100.20 (10.0.100.20) from 10.0.100.10 BLUE: 56(84) bytes of data.
+     64 bytes from 10.0.100.20: icmp_seq=1 ttl=64 time=2.35 ms
+     64 bytes from 10.0.100.20: icmp_seq=2 ttl=64 time=2.18 ms
 
 
 
