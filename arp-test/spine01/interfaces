@@ -14,12 +14,12 @@ iface swp3
 auto bridge
 iface bridge
   bridge-stp on
-  bridge-vids 100 200
-  bridge-ports swp1 vni100 vni200
+  bridge-vids 100 200 300
+  bridge-ports swp1 vni100 vni200 vni300
   bridge-vlan-aware yes
 
-auto RTB_LAN1
-  iface RTB_LAN1
+auto RED
+  iface RED
   vrf-table auto
 
 
@@ -29,7 +29,7 @@ iface vlan100
     ip-forward off
     vlan-id 100
     vlan-raw-device bridge
-    vrf RTB_LAN1
+    vrf RED
 
  
 auto vlan200
@@ -38,7 +38,19 @@ iface vlan200
     ip-forward off
     vlan-id 200
     vlan-raw-device bridge
-    vrf RTB_LAN1
+    vrf RED
+
+auto BLUE
+  iface BLUE
+  vrf-table auto
+
+auto vlan300
+iface vlan300
+    ip6-forward off
+    ip-forward off
+    vlan-id 300
+    vlan-raw-device bridge
+    vrf BLUE
 
  
 auto vni100
@@ -55,5 +67,13 @@ iface vni200
      bridge-access 200
      bridge-arp-nd-suppress on
      vxlan-id 10200
+     vxlan-local-tunnelip 1.1.1.1
+
+auto vni300
+iface vni300
+     bridge-learning off
+     bridge-access 300
+     bridge-arp-nd-suppress on
+     vxlan-id 10300
      vxlan-local-tunnelip 1.1.1.1
 
