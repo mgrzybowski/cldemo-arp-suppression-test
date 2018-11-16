@@ -29,7 +29,9 @@ Topology
      leaf01   leaf02
 
 
-    leaf01 and leaf02 are each configured with subinterfaces in vlan100 and vlan200 in "RED" VRF and vlan300 in "BLUE" VRF.
+    leaf01 and leaf02 are each configured with subinterfaces in vlan100 
+    and vlan200 in "RED" VRF and vlan300 in "BLUE" VRF.
+
     leaf01 (44:38:39:00:00:53):
      - 10.0.100.10/24 vlan100 ( VRF RED )
      - 10.0.100.10/24 vlan300 ( VRF BLUE , the same MAC/IP in diffrent L3 tenant )
@@ -125,10 +127,10 @@ But for ip neighbor table to appear when You do not have IP on  VLAN/SVI intefac
 You need to  enable "bridge-arp-nd-suppress on" on any of the  VXLAN/VNI interface. 
 Ifupdaown2 do so some magic then, and Cumulus patched kernels starts to learn neighbors:
 
-   info: bridge: vni100: set bridge-arp-nd-suppress on
-   debug: (cache 0)
-   info: vni100: netlink: ip link set dev vni100: bridge slave attributes
-   debug: vni100: ifla_info_slave_data {152: True}
+    info: bridge: vni100: set bridge-arp-nd-suppress on
+    debug: (cache 0)
+    info: vni100: netlink: ip link set dev vni100: bridge slave attributes
+    debug: vni100: ifla_info_slave_data {152: True}
 
 
 For the VNI's it is configured to advertise for, it will use the entries there and create EVPN NLRIs 
