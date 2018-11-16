@@ -125,19 +125,19 @@ the local switch will look at its local fdb (bridge fdb show) and neigh (ip neig
 Local fdb table is build by the bridge , no special steps are needed. 
 But for ip neighbor table to appear when You do not have IP on  VLAN/SVI inteface 
 You need to  enable "bridge-arp-nd-suppress on" on any of the  VXLAN/VNI interface. 
-Ifupdaown2 do so some magic then, and Cumulus patched kernels starts to learn neighbors:
+Ifupdaown2 do so some magic then, and sets some flags on the interface
 
     info: bridge: vni100: set bridge-arp-nd-suppress on
     debug: (cache 0)
     info: vni100: netlink: ip link set dev vni100: bridge slave attributes
     debug: vni100: ifla_info_slave_data {152: True}
 
-Additionaly  to that CL runs a daemon called neighmgrd
+Then daemon called neighmgrd comes to play:
 
       985 ?        Ssl    0:00 /usr/bin/python /usr/bin/neighmgrd
 
 whose sole purpose in life is to keep neighbor entries REACHABLE.
-Enablinhg ""bridge-arp-nd-suppress on" on interface will make neighmgrd 
+Enablinhg "bridge-arp-nd-suppress on" on interface will make neighmgrd 
 to  generate ARP Probes and Neighbor Solicitations in order to keep the neighbors reachable for the kernel.
 
      21:57:46.621715 44:38:39:00:00:54 > ff:ff:ff:ff:ff:ff, ethertype ARP (0x0806), length 42: Request who-has 10.0.100.10 tell 0.0.0.0, length 28
