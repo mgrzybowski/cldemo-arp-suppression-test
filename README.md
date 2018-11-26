@@ -1,7 +1,7 @@
 Test arp suppression configurations
 ========================
 This Github repository contains the configuration files necessary for setting 
-up basi arp-suppression tests on evpn/vxlan cumulus setup [Reference Topology](http://github.com/cumulusnetworks/cldemo-vagrant).
+up basic arp-suppression tests on evpn/vxlan cumulus setup [Reference Topology](http://github.com/cumulusnetworks/cldemo-vagrant).
 
 Quickstart: Run the demo
 ------------------------
@@ -272,4 +272,40 @@ In the case of ARP/ND Suppression, the local switch will perform Proxy-ARP/Proxy
     fe80::4638:39ff:fe00:5d dev vlan100 lladdr 44:38:39:00:00:5d router offload NOARP
     fe80::4638:39ff:fe00:5d dev vlan300 lladdr 44:38:39:00:00:5d router offload NOARP
     fe80::4638:39ff:fe00:5d dev vlan200 lladdr 44:38:39:00:00:5d router offload NOARP
+
+
+EVPN - Disable IPv6 NLRIs
+------------------------------------------
+In most cases IPv6 NLRIs are not needed. Additionaly Ipv6 link local address is additional vector of switch attack in LAN. Trey Aspelund from cumulus suport had severa ideas howto disable ipv6:
+
+The options that I considered were the following:
+
+- Control Plane filtering
+  > Likely route-maps, if frr has the right match parameters and it works in the L2VPN EVPN AFI/SAFI.
+  > I don't think this has ever been tested, so results may vary.
+  > Even if IPv6 MAC/IP routes were prevented from propagating via EVPN, I think v6 traffic would still be able to traverse VXLAN via the MAC routes.
+
+- Kernel settings (sysctl)
+  > This is kind of a messy solution, as sysctl can prove interesting to manipulate correctly
+  > I did some testing with this in VX and got interesting results. I set net.ipv6.conf.[interface].disable_ipv6 to '1' and net.ipv6.conf.[interface].accept_ra to '0'. I ended up with no IPv6 addresses on the SVI's, yet neighbor entries still show up via the vlan interfaces. This resulted in BGP creating Type 2 MAC/IPv6 routes anyway.
+
+- Inbound "deny" ACL matching IPv6 traffic
+  > This should prevent any v6 traffic from hitting the SVI's to begin with, so no neighbor entries should be learned
+  > If there are no neighbor entries, then there should be no MAC/IPv6 routes in EVPN.
+  > This should also prevent data plane v6 traffic from traversing VXLAN as well.
+
+
+In the end the simples solution seems to be disabling ipv6 on vlan interface. For example:
+
+    auto vlan100
+    iface vlan100
+        ip6-forward off
+        ip-forward off
+        vlan-id 100
+        vlan-raw-device bridge
+        vrf RED
+        ## disable ipv6 on interface and ipv6 EVPN  NLRIs
+        up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6
+
+
 

@@ -30,6 +30,8 @@ iface vlan100
     vlan-id 100
     vlan-raw-device bridge
     vrf RED
+    ## disable ipv6 on interface and ipv6 EVPN NLRIs 
+    ## up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6
 
  
 auto vlan200
@@ -39,6 +41,8 @@ iface vlan200
     vlan-id 200
     vlan-raw-device bridge
     vrf RED
+    ## disable ipv6 on interface and ipv6 EVPN  NLRIs
+    ## up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6
 
 auto BLUE
   iface BLUE
@@ -51,8 +55,10 @@ iface vlan300
     vlan-id 300
     vlan-raw-device bridge
     vrf BLUE
+    ## disable ipv6 on interface and ipv6 EVPN  NLRIs
+    ## up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6
 
- 
+
 auto vni100
 iface vni100
     bridge-access 100
