@@ -309,3 +309,28 @@ In the end the simples solution seems to be disabling ipv6 on vlan interface. Fo
 
 
 
+Linux box bridge connected to cumulus - multiple arp-reply to ARP "Probe",
+------------------------------------------
+
+http://tools.ietf.org/html/rfc5227:
+
+    The 'target IP address' field MUST be set to the address
+    being probed. An ARP Request constructed this way, with an all-zero
+    'sender IP address', is referred to as an 'ARP Probe'.
+
+
+In case when linux bridge for ARP probe kernel could not find related interface (sorce ip is 0.0.0.0) and sends multiple arp replay, one for each  interface MAC that it is in bridge.
+For example one :
+
+    13:10:30.024064 00:25:90:b2:ec:a8 > ff:ff:ff:ff:ff:ff, ethertype ARP (0x0806), length 60: Request who-has 10.196.13.101 tell 0.0.0.0, length 46
+    13:10:30.024112 0c:c4:7a:88:58:2e > 00:25:90:b2:ec:a8, ethertype ARP (0x0806), length 42: Reply 10.196.13.101 is-at 0c:c4:7a:88:58:2e, length 28
+    13:10:30.024155 c6:bc:31:00:ea:bf > 00:25:90:b2:ec:a8, ethertype ARP (0x0806), length 42: Reply 10.196.13.101 is-at c6:bc:31:00:ea:bf, length 28
+    13:10:30.024157 2e:b7:f7:89:77:a2 > 00:25:90:b2:ec:a8, ethertype ARP (0x0806), length 42: Reply 10.196.13.101 is-at 2e:b7:f7:89:77:a2, length 28
+    13:10:30.024158 ea:d7:f3:39:58:0e > 00:25:90:b2:ec:a8, ethertype ARP (0x0806), length 42: Reply 10.196.13.101 is-at ea:d7:f3:39:58:0e, length 28
+
+Multiple arp replays will cause cumulus box to learn last of them in neigh table and send NLRI containing that pair of ip-mac.
+Possibe solution is to restrict arp_announce/arp_ignore on linux box:
+
+    net.ipv4.conf.default.arp_announce = 2
+    net.ipv4.conf.default.arp_ignore = 1
+
