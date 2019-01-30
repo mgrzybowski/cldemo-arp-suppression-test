@@ -62,7 +62,7 @@ iface vlan300
 auto vni100
 iface vni100
     bridge-access 100
-#    bridge-arp-nd-suppress on
+    bridge-arp-nd-suppress on
     bridge-learning off
     vxlan-id 10100
     vxlan-local-tunnelip 1.1.1.1

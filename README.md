@@ -15,7 +15,7 @@ Before running this demo, install [VirtualBox](https://www.virtualbox.org/wiki/D
     cd cldemo-arp-suppression-test
     ansible-playbook deploy.yml
     ssh leaf01
-    ping 10.0.100.20
+    ping -I RED 10.0.100.20
 
 
 
@@ -333,4 +333,62 @@ Possibe solution is to restrict arp_announce/arp_ignore on linux box:
 
     net.ipv4.conf.default.arp_announce = 2
     net.ipv4.conf.default.arp_ignore = 1
+
+
+GARP Flood - is suppresed !
+------------------------------------------
+In cumulus tests in the LAB both the network and the attached hosts were updated upon an extended mobility scenario (mac or ip change upon "move") 
+as long as a single GARP was sent by the host doing the moving. 
+In all occasions, a BGP Update message was sent with the Extended MAC Mobility extended community incremented,
+which resulted in a GARP sent by the remote VTEP.
+In production enviroment single GARP packet is not enought:
+
+- GARP stream need to be long ( 5 - 10 second ) to make sure that every device in vlan updated their ARP table ( for example ten packets every second ) . 
+- VIP Could fall back to previous device , it could hours, or microseconds , so this IP-MAC pair for GARP not necessary is "new" . 
+- In case of any off unexpected condition (like network segmentation) You should be able to send GARP stream to fix ARP table to correct values on all of the servers in vlan.
+
+
+Acoording to https://tools.ietf.org/html/draft-ietf-bess-evpn-proxy-arp-nd-05 cumulus created Feature Request tracking as FR-1523 
+to allow GARP to be flooded :
+
+    4.5. Flooding (to Remote PEs) Reduction/Suppression
+
+       The Proxy-ARP/ND function implicitly helps reducing the flooding of
+       ARP Request and NS messages to remote PEs in an EVPN network.
+       However, in certain use-cases, the flooding of ARP/NS/NA messages
+       (and even the unknown unicast flooding) to remote PEs can be
+       suppressed completely in an EVPN network.
+
+       For instance, in an IXP network, since all the participant CEs are
+       well known and will not move to a different PE, the IP->MAC entries
+       may be all provisioned by a management system. Assuming the entries
+       for the CEs are all provisioned on the local PE, a given Proxy-ARP/ND
+       table will only contain static and EVPN-learned entries. In this
+       case, the operator may choose to suppress the flooding of ARP/NS/NA
+       to remote PEs completely.
+
+       The flooding may also be suppressed completely in IXP networks with
+       dynamic Proxy-ARP/ND entries assuming that all the CEs are directly
+       connected to the PEs and they all advertise their presence with a
+       GARP/unsolicited-NA when they connect to the network.
+
+       In networks where fast mobility is expected (DC use-case), it is not
+       recommended to suppress the flooding of unknown ARP-Requests/NS or
+       GARPs/unsolicited-NAs. Unknown ARP-Requests/NS refer to those
+       ARP-Request/NS messages for which the Proxy-ARP/ND lookups for the
+       requested IPs do not succeed.
+
+       In order to give the operator the choice to suppress/allow the
+       flooding to remote PEs, a PE MAY support administrative options to
+       individually suppress/allow the flooding of:
+
+       o Unknown ARP-Request and NS messages.
+       o GARP and unsolicited-NA messages.​
+
+       The operator will use these options based on the expected behavior in
+       the CEs.
+
+
+
+
 
